@@ -24,7 +24,7 @@ document.getElementById('divTag').addEventListener('mouseup', (e) => {
   div.style.position = 'absolute';
   div.style.top = e.clientY + "px";
   div.style.left = e.clientX + "px";
-   
+
   let demo = document.createElement('label');
   let demoId = Date.now();
   console.log("DemoId -> " + demoId);
@@ -45,9 +45,15 @@ document.getElementById('divTag').addEventListener('mouseup', (e) => {
   editBtn.setAttribute('value', "edit");
   editBtn.setAttribute('id', `edit${demoId}`);
   editId = `edit${demoId}`;
-  editBtn.setAttribute('onclick', `editFunc(${demoId}, label${demoId}, edit${demoId}, cancel${demoId})`);
+  editBtn.setAttribute('onclick', `editFunc(${demoId}, label${demoId}, edit${demoId}, cancel${demoId}, save${demoId})`);
   document.getElementById(divId).appendChild(editBtn);
 
+  let saveBtn = document.createElement('button');
+  saveBtn.innerHTML = 'save';
+  saveBtn.setAttribute('id', `save${demoId}`);
+  saveId = `save${demoId}`;
+  document.getElementById(divId).appendChild(saveBtn);
+  saveBtn.style.display = "none";
 
   let cancelBtn = document.createElement('button');
   cancelBtn.innerHTML = 'Cancel';
@@ -60,88 +66,67 @@ document.getElementById('divTag').addEventListener('mouseup', (e) => {
   removeBtn.innerHTML = 'remove';
   removeBtn.setAttribute('id', `remove${demoId}`);
   removeId = `remove${demoId}`;
-  removeBtn.setAttribute('onclick', `removeFunc(${demoId} , label${demoId}, edit${demoId}, remove${demoId}, cancel${demoId})`);
+  removeBtn.setAttribute('onclick', `removeFunc(${demoId})`);
   document.getElementById(divId).appendChild(removeBtn);
 
 });
 
 
 
-function editFunc(editId, labelEle, editEle, cancelEle) {
+function editFunc(editId, labelEle, editEle, cancelEle, saveEle) {
+  let value = labelEle.innerText;
   labelEle.innerText = "";
 
   let input = document.createElement('input');
   input.setAttribute('type', 'text');
-  input.setAttribute('value', "Hello");
+  input.setAttribute('value', value);
   inputId = `input${editId}`;
   input.setAttribute('id', inputId);
   labelEle.appendChild(input);
 
-  editEle.value = "save";
+  editEle.style.display = "none";
+  saveEle.style.display = "block";
   cancelEle.style.display = "block";
 
-  editEle.addEventListener('click', () => {
-    if (input.value === 'Hello') {
-      alert("Not editted");
-      let inputVal = input.value;
-      console.log(inputVal);
-      labelEle.innerText = inputVal;
-    }
-    else {
-      let inputVal = input.value;
-      console.log(inputVal);
-      labelEle.innerText = inputVal;
-    }
-    editEle.value = "edit";
+  saveEle.addEventListener('click', () => {
+
+    let inputVal = input.value;
+    console.log(inputVal);
+    labelEle.innerText = inputVal;
+
+    editEle.style.display = "block";
+    saveEle.style.display = "none";
     cancelEle.style.display = "none";
+
+    let x = editId;
+    let index = clicks.findIndex(({ id }) => x === id);
+    console.log(index);
+    let val = clicks[index]
+    val.text = inputVal;
+    console.log(clicks);
   });
 
-  cancelEle.addEventListener('click', () => {
-    if (input.value === "Hello") {
-      let inputVal = input.value;
-      console.log(inputVal);
-      labelEle.innerText = inputVal;
-    }
-    else {
-      labelEle.innerText = "Hello";
-    }
 
-    editEle.value = "edit";
+
+  cancelEle.addEventListener('click', () => {
+    labelEle.innerText = value;
+
+    editEle.style.display = "block";
+    saveEle.style.display = "none";
     cancelEle.style.display = "none";
   });
 
 }
 
-// function saveFunc(inputEle, labelEle){
 
-//   console.log(inputEle);
-//   //console.log(labelEle);
-//     if (inputEle.value === 'Hello') {
-//       alert("Not editted");
-//       let inputVal = inputEle.value;
-//       console.log(inputVal);
-//       labelEle.innerText = inputVal;
-//     }
-//     else {
-//       let inputVal = inputEle.value;
-//       console.log(inputVal);
-//       labelEle.innerText = inputVal;
-//     }
-//     // editEle.value = "edit";
-//     // cancelEle.style.display = "none";
-
-// }
-
-
-function removeFunc(Id, labelEle, editEle, removeEle, cancelEle) {
+function removeFunc(Id) {
   var x = Id;
   console.log(x);
   let index = clicks.findIndex(({ id }) => x === id);
   console.log(index);
   clicks.splice(index, 1);
+  var obj = document.getElementById(Id);
+  console.log(obj);
+  obj.remove();
 
-  labelEle.remove();
-  editEle.remove();
-  removeEle.remove();
-cancelEle.remove();
 }
